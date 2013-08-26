@@ -3,7 +3,7 @@ RouletteScrollEffect
 ===================
 
 This is a subclass of :class:`kivy.effects.ScrollEffect` that simulates the 
-motion of a roulette, or a notched wheel (think of Wheel of Fortune). It is
+motion of a roulette, or a notched wheel (think Wheel of Fortune). It is
 primarily designed for emulating the effect of the iOS and android date pickers.
 
 Usage
@@ -50,7 +50,7 @@ Other settings that can be played with include
 :attr:`RouletteScrollEffect.pull_duration`, 
 :attr:`RouletteScrollEffect.coasting_alpha`,
 :attr:`RouletteScrollEffect.pull_back_velocity`, and
-:attr:`RouletteScrollEffect.terminal_velocity`. See their module documentation
+:attr:`RouletteScrollEffect.terminal_velocity`. See their module documentations
 for details.
 '''
 
@@ -203,10 +203,10 @@ if __name__ == '__main__':
                      size_hint=(None, None))
         layout.add_widget(btn)
 
-    # create a scroll view, with a size < size of the grid
     root = ScrollView(size_hint=(None, None), size=(500, 320),
             pos_hint={'center_x': .5, 'center_y': .5}
             , do_scroll_x=False)
     root.add_widget(layout)
+
     root.effect_y = RouletteScrollEffect(anchor=20, interval=40)
     runTouchApp(root)
