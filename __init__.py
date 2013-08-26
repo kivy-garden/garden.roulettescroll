@@ -9,7 +9,51 @@ primarily designed for emulating the effect of the iOS and android date pickers.
 Usage
 -----
 
+Here's an example of using :class:`RouletteScrollEffect` for a 
+:class:`kivy.uix.scrollview.ScrollView`:: 
+
+    if __name__ == '__main__':
+        # example modified from the scrollview example
+    
+        from kivy.uix.gridlayout import GridLayout
+        from kivy.uix.button import Button
+        from kivy.uix.scrollview import ScrollView
+    
+        # preparing a gridlayout inside a scrollview
+        layout = GridLayout(cols=1, padding=10,
+                size_hint=(None, None), width=500)
+    
+        layout.bind(minimum_height=layout.setter('height'))
+    
+        for i in range(30):
+            btn = Button(text=str(i), size=(480, 40),
+                         size_hint=(None, None))
+            layout.add_widget(btn)
+    
+        root = ScrollView(size_hint=(None, None), size=(500, 320),
+                pos_hint={'center_x': .5, 'center_y': .5}
+                , do_scroll_x=False)
+        root.add_widget(layout)
+        
+        # preparation complete. Now add the new scroll effect!
+        root.effect_y = RouletteScrollEffect(anchor=20, interval=40)
+
+        runTouchApp(root)
+        
+Here the :class:`ScrollView` scrolls through a series of buttons with height
+40. We then attached a :class:`RouletteScrollEffect` with interval 40, 
+corresponding to the button heights. This allows the scrolling to stop at
+the same offset no matter where it stops. The :attr:`RouletteScrollEffect.anchor`
+adjusts this offset. 
+
+Other settings that can be played with include 
+:attr:`RouletteScrollEffect.pull_duration`, 
+:attr:`RouletteScrollEffect.coasting_alpha`,
+:attr:`RouletteScrollEffect.pull_back_velocity`, and
+:attr:`RouletteScrollEffect.terminal_velocity`. See their module documentation
+for details.
 '''
+
 from kivy.animation import Animation
 from kivy.base import runTouchApp
 from kivy.clock import Clock
@@ -32,7 +76,7 @@ class RouletteScrollEffect(ScrollEffect):
     min = NumericProperty(-float('inf'))
     max = NumericProperty(float('inf'))
 
-    interval = NumericProperty(1)
+    interval = NumericProperty(50)
     '''the interval of the values of the "roulette".'''
     
     anchor = NumericProperty(0)
@@ -64,6 +108,15 @@ class RouletteScrollEffect(ScrollEffect):
                                             'pull_duration',
                                             'friction'],
                                       cache=True)
+    '''if velocity falls between :attr:`pull_back_velocity` and 
+    :attr:`terminal velocity` then the movement will start to coast
+    to the next coming stopping value.
+    
+    :attr:`terminal_velocity` is computed from a set formula given
+    :attr:`interval`, :attr:`coasting_alpha`, :attr:`pull_duration`,
+    and :attr:`friction`. Setting :attr:`terminal_velocity` has the
+    effect of setting :attr:`pull_duration`.
+    '''
 
     def start(self, val, t=None):
         Animation.stop_all(self)
@@ -132,4 +185,28 @@ class RouletteScrollEffect(ScrollEffect):
     def _coasted_to_stop(self, *args):
         self.velocity = 0
         self.dispatch('on_coasted_to_stop')
-        
+     
+if __name__ == '__main__':
+    # example modified from the scrollview example
+
+    from kivy.uix.gridlayout import GridLayout
+    from kivy.uix.button import Button
+    from kivy.uix.scrollview import ScrollView
+
+    layout = GridLayout(cols=1, padding=10,
+            size_hint=(None, None), width=500)
+
+    layout.bind(minimum_height=layout.setter('height'))
+
+    for i in range(30):
+        btn = Button(text=str(i), size=(480, 40),
+                     size_hint=(None, None))
+        layout.add_widget(btn)
+
+    # create a scroll view, with a size < size of the grid
+    root = ScrollView(size_hint=(None, None), size=(500, 320),
+            pos_hint={'center_x': .5, 'center_y': .5}
+            , do_scroll_x=False)
+    root.add_widget(layout)
+    root.effect_y = RouletteScrollEffect(anchor=20, interval=40)
+    runTouchApp(root)
