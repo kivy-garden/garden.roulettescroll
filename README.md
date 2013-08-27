@@ -45,9 +45,16 @@ corresponding to the button heights. This allows the scrolling to stop at
 the same offset no matter where it stops. The `RouletteScrollEffect.anchor`
 adjusts this offset. 
 
+Customizations
+--------------
+
 Other settings that can be played with include 
-`RouletteScrollEffect.pull_duration`, 
+`RouletteScrollEffect.pull_duration`,
 `RouletteScrollEffect.coasting_alpha`,
 `RouletteScrollEffect.pull_back_velocity`, and
 `RouletteScrollEffect.terminal_velocity`. See their module documentations
 for details.
+
+`RouletteScrollEffect` has one event ``on_coasted_to_stop`` that
+is fired when the roulette stops, "making a selection". It can be listened to
+for handling or cleaning up choice making.
