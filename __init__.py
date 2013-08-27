@@ -65,7 +65,7 @@ from kivy.animation import Animation
 from kivy.base import runTouchApp
 from kivy.clock import Clock
 from kivy.effects.scroll import ScrollEffect
-from kivy.properties import NumericProperty, AliasProperty
+from kivy.properties import NumericProperty, AliasProperty, ObjectProperty
 from math import ceil, floor, exp
 
 class RouletteScrollEffect(ScrollEffect):
@@ -103,6 +103,8 @@ class RouletteScrollEffect(ScrollEffect):
     '''the velocity below which the scroll value will be drawn to the 
     *nearest* notch instead of the *next* notch in the direction travelled.'''
 
+    _anim = ObjectProperty(None)
+    
     def get_term_vel(self):
         return (exp(self.friction) * self.interval * 
                 self.coasting_alpha / self.pull_duration)
@@ -126,7 +128,8 @@ class RouletteScrollEffect(ScrollEffect):
     '''
 
     def start(self, val, t=None):
-        Animation.stop_all(self)
+        if self._anim:
+            self._anim.stop(self)
         return ScrollEffect.start(self, val, t=t)
     
     def on_notch(self, *args):
@@ -170,14 +173,16 @@ class RouletteScrollEffect(ScrollEffect):
             anim = Animation(scroll=next_, 
                              duration=duration,
                              )
-            anim.on_complete = lambda *args: self._coasted_to_stop()
+            self._anim = anim
+            anim.on_complete = self._coasted_to_stop
             anim.start(self)
             return
         if abs(velocity) < pull_back_velocity and not self.on_notch():
             anim = Animation(scroll=self.nearest_notch(), 
                              duration=self.pull_duration,
                              t='in_out_circ')
-            anim.on_complete = lambda *args: self._coasted_to_stop()
+            self._anim = anim
+            anim.on_complete = self._coasted_to_stop
             anim.start(self)
         else:
             self.velocity -= self.velocity * self.friction
@@ -192,6 +197,7 @@ class RouletteScrollEffect(ScrollEffect):
     def _coasted_to_stop(self, *args):
         self.velocity = 0
         self.dispatch('on_coasted_to_stop')
+        
      
 if __name__ == '__main__':
     # example modified from the scrollview example
