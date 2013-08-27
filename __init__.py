@@ -164,6 +164,8 @@ class RouletteScrollEffect(ScrollEffect):
             return None
         
     def update_velocity(self, dt):
+        if self.is_manual:
+            return
         velocity = self.velocity
         t_velocity = self.terminal_velocity
         next_ = self.near_next_notch()
