@@ -17,7 +17,8 @@ Here's an example of using `RouletteScrollEffect` for a
 	    from kivy.uix.gridlayout import GridLayout
 	    from kivy.uix.button import Button
 	    from kivy.uix.scrollview import ScrollView
-	
+		from kivy.garden.roulettescroll import RouletteScrollEffect
+		
 	    layout = GridLayout(cols=1, padding=10,
 	            size_hint=(None, None), width=500)
 	
