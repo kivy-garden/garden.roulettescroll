@@ -62,7 +62,6 @@ for handling or cleaning up choice making.
 '''
 
 from kivy.animation import Animation
-from kivy.base import runTouchApp
 from kivy.clock import Clock
 from kivy.effects.scroll import ScrollEffect
 from kivy.properties import NumericProperty, AliasProperty, ObjectProperty
@@ -207,6 +206,7 @@ if __name__ == '__main__':
     from kivy.uix.gridlayout import GridLayout
     from kivy.uix.button import Button
     from kivy.uix.scrollview import ScrollView
+    from kivy.base import runTouchApp
 
     layout = GridLayout(cols=1, padding=10,
             size_hint=(None, None), width=500)
